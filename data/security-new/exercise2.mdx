@@ -61,7 +61,7 @@ for master in $(oc get nodes --selector node-role.kubernetes.io/master --output 
     echo "Checking ${log_file}..."
     result=$(oc adm node-logs "${master}" --path=kube-apiserver/${log_file} 2>/dev/null \
       | jq --arg ns "${namespace}" 'select(.objectRef.namespace == $ns
-            and .objectRef.name == "payment-gateway"
+            and (.objectRef.name | startswith("payment-gateway"))
             and .verb == "get"
             and .stage == "ResponseStarted"
             and .objectRef.subresource == "exec")' 2>/dev/null \
